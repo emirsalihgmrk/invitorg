@@ -132,79 +132,79 @@ WaitlistEntry(id, eventId, userId, position)
 
 **Hafta 1: Analiz**
 
-- Rakip analizi (Luma, Eventbrite, Bubilet) ve karşılaştırma tablosu
-- Kullanıcı hikâyeleri ve kabul kriterleri
-- Wireframe (Figma): etkinlik sayfası, host paneli, check-in ekranı
-- **Çıktı:** Gereksinim dokümanı, wireframe'ler
+- [ ] Rakip analizi (Luma, Eventbrite, Bubilet) ve karşılaştırma tablosu
+- [ ] Kullanıcı hikâyeleri ve kabul kriterleri
+- [ ] Wireframe (Figma): etkinlik sayfası, host paneli, check-in ekranı
+- [ ] **Çıktı:** Gereksinim dokümanı, wireframe'ler
 
-**Hafta 2: Kurulum**
+**Hafta 2: Kurulum** ✅
 
-- Next.js projesi, ESLint/Prettier, CI (GitHub Actions)
-- Veritabanı şeması ve ilk migration
-- Kimlik doğrulama ve rol yapısı
-- **Çıktı:** Çalışan iskelet, deploy edilmiş boş uygulama
+- [x] Next.js projesi, ESLint/Prettier, CI (GitHub Actions)
+- [x] Veritabanı şeması ve ilk migration
+- [x] Kimlik doğrulama ve rol yapısı
+- [x] **Çıktı:** Çalışan iskelet, deploy edilmiş boş uygulama
 
 ### Faz 2: MVP Çekirdeği
 
 **Hafta 3-4: Etkinlik yönetimi**
 
-- Etkinlik CRUD, yayın sayfası, bilet türleri
-- Kontenjan mantığı
-- Host paneli (liste ve detay)
-- **Çıktı:** Host etkinlik oluşturup link paylaşabiliyor
+- [ ] Etkinlik CRUD, yayın sayfası, bilet türleri
+- [ ] Kontenjan mantığı
+- [ ] Host paneli (liste ve detay)
+- [ ] **Çıktı:** Host etkinlik oluşturup link paylaşabiliyor
 
 **Hafta 5-6: Sipariş ve ödeme**
 
-- Sepet/sipariş akışı, geçici rezervasyon (hold)
-- Ödeme sağlayıcı entegrasyonu (sandbox), webhook
-- Süresi dolan rezervasyon temizliği (cron)
-- **Çıktı:** Misafir sandbox ödemesiyle bilet alabiliyor
+- [ ] Sepet/sipariş akışı, geçici rezervasyon (hold)
+- [ ] Ödeme sağlayıcı entegrasyonu (sandbox), webhook
+- [ ] Süresi dolan rezervasyon temizliği (cron)
+- [ ] **Çıktı:** Misafir sandbox ödemesiyle bilet alabiliyor
 
 **Hafta 7: QR bilet**
 
-- QR üretimi, e-posta gönderimi
-- "Biletlerim" sayfası
-- **Çıktı:** Ödeme sonrası QR bilet e-postayla geliyor
+- [ ] QR üretimi, e-posta gönderimi
+- [ ] "Biletlerim" sayfası
+- [ ] **Çıktı:** Ödeme sonrası QR bilet e-postayla geliyor
 
 **Hafta 8: Check-in**
 
-- Görevli rolü ve atama
-- Kamera ile QR okutma sayfası
-- Çift okutma koruması, `CheckInLog`
-- Host panelinde canlı doluluk
-- **Çıktı:** Uçtan uca akış çalışıyor (**MVP tamam, 8. hafta sonu demo**)
+- [ ] Görevli rolü ve atama
+- [ ] Kamera ile QR okutma sayfası
+- [ ] Çift okutma koruması, `CheckInLog`
+- [ ] Host panelinde canlı doluluk
+- [ ] **Çıktı:** Uçtan uca akış çalışıyor (**MVP tamam, 8. hafta sonu demo**)
 
 ### Faz 3: Farklılaştırma
 
 **Hafta 9-10: Özel özellikler**
 
-- Menü ve alerji alanları
-- Kişiye özel davet linki ve +1 hakkı
-- Bekleme listesi
-- (Zaman varsa) PWA ve çevrimdışı check-in
-- **Çıktı:** En az 2-3 farklılaştırıcı özellik çalışıyor
+- [ ] Menü ve alerji alanları
+- [ ] Kişiye özel davet linki ve +1 hakkı
+- [ ] Bekleme listesi
+- [ ] (Zaman varsa) PWA ve çevrimdışı check-in
+- [ ] **Çıktı:** En az 2-3 farklılaştırıcı özellik çalışıyor
 
 ### Faz 4: Kalite ve Teslim
 
 **Hafta 11: Test ve pilot**
 
-- Birim ve uçtan uca testler (ödeme, check-in, kontenjan yarışı)
-- Güvenlik gözden geçirmesi, performans, responsive düzeltmeler
-- **Gerçek bir etkinlikte pilot** (arkadaş yemeği, kulüp etkinliği), 10-15 kişi
-- Kullanılabilirlik anketi (SUS)
-- **Çıktı:** Test raporu, kullanıcı geri bildirimi
+- [ ] Birim ve uçtan uca testler (ödeme, check-in, kontenjan yarışı)
+- [ ] Güvenlik gözden geçirmesi, performans, responsive düzeltmeler
+- [ ] **Gerçek bir etkinlikte pilot** (arkadaş yemeği, kulüp etkinliği), 10-15 kişi
+- [ ] Kullanılabilirlik anketi (SUS)
+- [ ] **Çıktı:** Test raporu, kullanıcı geri bildirimi
 
 **Hafta 12: Rapor ve sunum**
 
-- Bitirme raporu, UML diyagramları, test sonuçları
-- Sunum ve demo senaryosu, yedek plan (demo çökerse ekran kaydı)
-- **Çıktı:** Teslim edilebilir rapor ve sunum
+- [ ] Bitirme raporu, UML diyagramları, test sonuçları
+- [ ] Sunum ve demo senaryosu, yedek plan (demo çökerse ekran kaydı)
+- [ ] **Çıktı:** Teslim edilebilir rapor ve sunum
 
 ## 8. Kilometre Taşları
 
 | Hafta | Kilometre taşı                            |
 | ----- | ----------------------------------------- |
-| 2     | İskelet uygulama deploy edildi            |
+| 2 ✅  | İskelet uygulama deploy edildi            |
 | 4     | Etkinlik oluşturma ve yayın çalışıyor     |
 | 6     | Sandbox ödeme çalışıyor                   |
 | **8** | **MVP tamam: ödeme → QR → check-in**      |
