@@ -5,15 +5,17 @@ import type { ActionResult } from "@/lib/action";
 import type {
   CreateEventInput,
   CreateTicketTypeInput,
-  UpdateEventInput,
+  EditEventInput,
   UpdateTicketTypeInput,
 } from "@/schemas/event";
 import {
+  cancelEventService,
   createEventService,
   createTicketTypeService,
   deleteEventService,
   deleteTicketTypeService,
-  updateEventService,
+  editEventService,
+  publishEventService,
   updateTicketTypeService,
 } from "@/services/event";
 
@@ -26,12 +28,30 @@ export async function createEventAction(input: CreateEventInput): Promise<Action
   }
 }
 
-export async function updateEventAction(
+export async function editEventAction(
   eventId: string,
-  input: UpdateEventInput,
+  input: EditEventInput,
 ): Promise<ActionResult> {
   try {
-    await updateEventService(eventId, input);
+    await editEventService(eventId, input);
+    return { ok: true, data: undefined };
+  } catch (error) {
+    return toActionFailure(error);
+  }
+}
+
+export async function publishEventAction(eventId: string): Promise<ActionResult> {
+  try {
+    await publishEventService(eventId);
+    return { ok: true, data: undefined };
+  } catch (error) {
+    return toActionFailure(error);
+  }
+}
+
+export async function cancelEventAction(eventId: string): Promise<ActionResult> {
+  try {
+    await cancelEventService(eventId);
     return { ok: true, data: undefined };
   } catch (error) {
     return toActionFailure(error);

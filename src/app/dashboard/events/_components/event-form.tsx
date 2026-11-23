@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { createEventAction, updateEventAction } from "@/actions/event";
+import { createEventAction, editEventAction } from "@/actions/event";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -55,7 +55,7 @@ export default function EventForm({ event }: EventFormProps) {
 
   async function handleValidSubmit(data: CreateEventInput) {
     if (event) {
-      const result = await updateEventAction(event.id, data);
+      const result = await editEventAction(event.id, data);
       if (!result.ok) {
         // A root error also marks the submit as unsuccessful, re-enabling the form.
         setError("root", { message: result.error });

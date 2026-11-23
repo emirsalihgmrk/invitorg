@@ -4,10 +4,11 @@ import type { ReactNode } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { isEventDeletable, isEventEditable } from "@/constants/event";
+import { canChangeEventStatus, isEventDeletable, isEventEditable } from "@/constants/event";
 import { cn, formatEventDateTime } from "@/lib/utils";
 import type { EventDetail } from "@/schemas/event";
 
+import ChangeEventStatusButton from "./change-event-status-button";
 import DeleteEventButton from "./delete-event-button";
 import EventStatusBadge from "../../../../_components/event-status-badge";
 
@@ -31,7 +32,10 @@ export default function EventDetails({ event }: EventDetailsProps) {
             )}
           </div>
         </div>
-        <div className="flex shrink-0 gap-2">
+        <div className="flex shrink-0 flex-wrap gap-2">
+          {canChangeEventStatus(event.status, "published") && (
+            <ChangeEventStatusButton eventId={event.id} status="published" />
+          )}
           {isEventEditable(event.status) && (
             <Button
               variant="outline"
@@ -44,6 +48,9 @@ export default function EventDetails({ event }: EventDetailsProps) {
           )}
           {isEventDeletable(event.status) && (
             <DeleteEventButton eventId={event.id} eventTitle={event.title} />
+          )}
+          {canChangeEventStatus(event.status, "cancelled") && (
+            <ChangeEventStatusButton eventId={event.id} status="cancelled" />
           )}
         </div>
       </div>

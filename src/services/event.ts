@@ -1,6 +1,11 @@
 import { cache } from "react";
 
-import { areTicketTypesEditable, isEventDeletable, isEventEditable } from "@/constants/event";
+import {
+  areTicketTypesEditable,
+  canChangeEventStatus,
+  isEventDeletable,
+  isEventEditable,
+} from "@/constants/event";
 import {
   createEvent,
   createTicketType,
@@ -16,16 +21,16 @@ import { randomToken } from "@/lib/tokens";
 import {
   createEventSchema,
   createTicketTypeSchema,
-  updateEventSchema,
+  editEventSchema,
   updateTicketTypeSchema,
 } from "@/schemas/event";
 import type {
   CreateEventInput,
   CreateTicketTypeInput,
+  EditEventInput,
   EventDetail,
   EventListItem,
   TicketType,
-  UpdateEventInput,
   UpdateTicketTypeInput,
 } from "@/schemas/event";
 import { getCurrentUserService } from "@/services/auth";
@@ -97,11 +102,11 @@ export async function createEventService(input: CreateEventInput): Promise<strin
   return id;
 }
 
-export async function updateEventService(eventId: string, input: UpdateEventInput): Promise<void> {
+export async function editEventService(eventId: string, input: EditEventInput): Promise<void> {
   const user = await getCurrentUserService();
   if (!user) throw new AppError("Giriş yapmanız gerekiyor");
 
-  const data = updateEventSchema.parse(input);
+  const data = editEventSchema.parse(input);
 
   const event = await getEventService(eventId);
   if (!event) throw new AppError("Etkinlik bulunamadı");
@@ -114,6 +119,38 @@ export async function updateEventService(eventId: string, input: UpdateEventInpu
   }
 
   await updateEvent(event.id, data);
+}
+
+export async function publishEventService(eventId: string): Promise<void> {
+  const user = await getCurrentUserService();
+  if (!user) throw new AppError("Giriş yapmanız gerekiyor");
+
+  const event = await getEventService(eventId);
+  if (!event) throw new AppError("Etkinlik bulunamadı");
+  if (!canChangeEventStatus(event.status, "published")) {
+    throw new AppError("Yalnızca taslak etkinlikler yayınlanabilir");
+  }
+  if (event.ticketTypes.length === 0) {
+    throw new AppError("Yayınlamak için en az bir bilet türü ekleyin");
+  }
+  if (event.startsAt <= new Date()) {
+    throw new AppError("Geçmiş tarihli bir etkinlik yayınlanamaz");
+  }
+
+  await updateEvent(event.id, { status: "published" });
+}
+
+export async function cancelEventService(eventId: string): Promise<void> {
+  const user = await getCurrentUserService();
+  if (!user) throw new AppError("Giriş yapmanız gerekiyor");
+
+  const event = await getEventService(eventId);
+  if (!event) throw new AppError("Etkinlik bulunamadı");
+  if (!canChangeEventStatus(event.status, "cancelled")) {
+    throw new AppError("Yalnızca yayındaki etkinlikler iptal edilebilir");
+  }
+
+  await updateEvent(event.id, { status: "cancelled" });
 }
 
 export async function deleteEventService(eventId: string): Promise<void> {

@@ -71,8 +71,11 @@ export const createEventSchema = createEventRowSchema
   });
 export type CreateEventInput = z.infer<typeof createEventSchema>;
 
-// Also the input of updateEventService.
-export const updateEventSchema = createEventSchema.partial();
+// Unlike the host's edits, a DAL update may also change the status (publish,
+// cancel), which only the server sets.
+export const updateEventSchema = createEventSchema
+  .extend(createEventRowSchema.pick({ status: true }).shape)
+  .partial();
 export type UpdateEventInput = z.infer<typeof updateEventSchema>;
 
 // Also the input of createTicketTypeService.
@@ -100,3 +103,8 @@ export type CreateTicketTypeInput = z.infer<typeof createTicketTypeSchema>;
 // Also the input of updateTicketTypeService.
 export const updateTicketTypeSchema = createTicketTypeSchema.partial();
 export type UpdateTicketTypeInput = z.infer<typeof updateTicketTypeSchema>;
+
+// ── Service input schemas ──
+
+export const editEventSchema = updateEventSchema.omit({ status: true });
+export type EditEventInput = z.infer<typeof editEventSchema>;

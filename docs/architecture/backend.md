@@ -163,6 +163,9 @@ derive from earlier ones.
 
 - **Named after the service without the `Service` suffix:** `publishEventService` →
   `publishEventSchema` / `PublishEventInput`.
+- When the service takes exactly the DAL input, the DAL schema serves both (`createEventSchema`).
+  When it must narrow it under the same name (`updateEvent` accepts `status`, the host's edit must
+  not), the service gets a concrete verb instead: `editEventService` → `editEventSchema`.
 - **Derived only by narrowing** the DAL input schema(s): `.pick`, `.omit`, `.required`, `.extend`
   with another module's shape.
 - **Never include fields the server derives** (`slug`, `status`, `total`, `expiresAt`, `qrToken`).
