@@ -1,3 +1,4 @@
+import { connection } from "next/server";
 import { cache } from "react";
 
 import {
@@ -5,6 +6,7 @@ import {
   canChangeEventStatus,
   isEventDeletable,
   isEventEditable,
+  isEventVisible,
 } from "@/constants/event";
 import {
   createEvent,
@@ -14,7 +16,7 @@ import {
   updateEvent,
   updateTicketType,
 } from "@/dal/event/mutations";
-import { getEvent, getEvents } from "@/dal/event/queries";
+import { getEvent, getEventBySlug, getEvents } from "@/dal/event/queries";
 import { AppError } from "@/lib/errors";
 import { isUuid } from "@/lib/ids";
 import { randomToken } from "@/lib/tokens";
@@ -83,9 +85,22 @@ export const getEventsService = cache(async (): Promise<EventListItem[]> => {
 export const getEventService = cache(async (eventId: string): Promise<EventDetail | null> => {
   if (!isUuid(eventId)) return null;
 
+  // The query runs alongside the session read. While prerendering, headers()
+  // never resolves but the query would still open a database connection, which
+  // Next rejects; connection() stops prerendering before either starts.
+  await connection();
   const [user, event] = await Promise.all([getCurrentUserService(), getEvent(eventId)]);
   // Only the host manages an event; to anyone else it does not exist.
   if (!user || !event || event.hostId !== user.id) return null;
+  return event;
+});
+
+// The guest-facing read: anyone with the link, plus the host previewing a draft.
+export const getEventBySlugService = cache(async (slug: string): Promise<EventDetail | null> => {
+  await connection(); // see getEventService
+  const [user, event] = await Promise.all([getCurrentUserService(), getEventBySlug(slug)]);
+  if (!event) return null;
+  if (!isEventVisible(event.status) && event.hostId !== user?.id) return null;
   return event;
 });
 

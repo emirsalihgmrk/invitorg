@@ -1,14 +1,20 @@
-import { LockIcon, PencilIcon } from "lucide-react";
+import { ExternalLinkIcon, LockIcon, PencilIcon } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { canChangeEventStatus, isEventDeletable, isEventEditable } from "@/constants/event";
+import {
+  canChangeEventStatus,
+  isEventDeletable,
+  isEventEditable,
+  isEventVisible,
+} from "@/constants/event";
 import { cn, formatEventDateTime } from "@/lib/utils";
 import type { EventDetail } from "@/schemas/event";
 
 import ChangeEventStatusButton from "./change-event-status-button";
+import CopyLinkButton from "./copy-link-button";
 import DeleteEventButton from "./delete-event-button";
 import EventStatusBadge from "../../../../_components/event-status-badge";
 
@@ -54,6 +60,7 @@ export default function EventDetails({ event }: EventDetailsProps) {
           )}
         </div>
       </div>
+      <EventLink event={event} />
       <dl className="grid gap-4 rounded-xl border p-4 sm:grid-cols-2">
         <Detail label="Tarih ve saat">{formatEventDateTime(event.startsAt)}</Detail>
         <Detail label="Kontenjan">{event.capacity} kişi</Detail>
@@ -68,6 +75,36 @@ export default function EventDetails({ event }: EventDetailsProps) {
           {event.refundPolicy}
         </Detail>
       </dl>
+    </div>
+  );
+}
+
+interface EventLinkProps {
+  event: EventDetail;
+}
+
+function EventLink({ event }: EventLinkProps) {
+  const path = `/events/${event.slug}`;
+  const isVisible = isEventVisible(event.status);
+
+  return (
+    <div className="flex flex-col gap-3 rounded-xl border p-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex min-w-0 flex-col gap-1">
+        <p className="text-sm text-muted-foreground">Etkinlik sayfası</p>
+        <p className="truncate font-mono text-sm">{path}</p>
+        {!isVisible && (
+          <p className="text-sm text-muted-foreground">
+            Yayınladığınızda bu linki misafirlerle paylaşabilirsiniz.
+          </p>
+        )}
+      </div>
+      <div className="flex shrink-0 gap-2">
+        {isVisible && <CopyLinkButton path={path} />}
+        <Button variant="outline" size="sm" nativeButton={false} render={<Link href={path} />}>
+          <ExternalLinkIcon aria-hidden />
+          {isVisible ? "Sayfayı aç" : "Önizle"}
+        </Button>
+      </div>
     </div>
   );
 }

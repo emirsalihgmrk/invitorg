@@ -35,8 +35,8 @@
 ### MVP (mutlaka bitecek)
 
 - [ ] Kayıt, giriş ve rol yönetimi
-- [ ] Etkinlik oluşturma, düzenleme, yayınlama (CRUD)
-- [ ] Paylaşılabilir etkinlik sayfası (slug)
+- [x] Etkinlik oluşturma, düzenleme, yayınlama (CRUD)
+- [x] Paylaşılabilir etkinlik sayfası (slug)
 - [ ] Bilet türleri ve kontenjan kontrolü
 - [ ] Ödeme (sandbox) ve sipariş yönetimi
 - [ ] QR bilet üretimi ve e-posta ile gönderim
@@ -146,12 +146,12 @@ WaitlistEntry(id, eventId, userId, position)
 
 ### Faz 2: MVP Çekirdeği
 
-**Hafta 3-4: Etkinlik yönetimi**
+**Hafta 3-4: Etkinlik yönetimi** ✅
 
-- [ ] Etkinlik CRUD, yayın sayfası, bilet türleri
-- [ ] Kontenjan mantığı
-- [ ] Host paneli (liste ve detay)
-- [ ] **Çıktı:** Host etkinlik oluşturup link paylaşabiliyor
+- [x] Etkinlik CRUD, yayın sayfası, bilet türleri
+- [x] Kontenjan mantığı
+- [x] Host paneli (liste ve detay)
+- [x] **Çıktı:** Host etkinlik oluşturup link paylaşabiliyor
 
 **Hafta 5-6: Sipariş ve ödeme**
 
@@ -205,7 +205,7 @@ WaitlistEntry(id, eventId, userId, position)
 | Hafta | Kilometre taşı                            |
 | ----- | ----------------------------------------- |
 | 2 ✅  | İskelet uygulama deploy edildi            |
-| 4     | Etkinlik oluşturma ve yayın çalışıyor     |
+| 4 ✅  | Etkinlik oluşturma ve yayın çalışıyor     |
 | 6     | Sandbox ödeme çalışıyor                   |
 | **8** | **MVP tamam: ödeme → QR → check-in**      |
 | 10    | Farklılaştırıcı özellikler tamam          |

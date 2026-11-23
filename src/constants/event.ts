@@ -19,6 +19,12 @@ export function isEventEditable(status: EventStatus): boolean {
   return EVENT_STATUS_TRANSITIONS[status].length > 0;
 }
 
+// Drafts are seen only by their host. Once published, an event stays reachable
+// by its link, also after it is cancelled or completed, so guests can see that.
+export function isEventVisible(status: EventStatus): boolean {
+  return status !== "draft";
+}
+
 // A published event may already have orders, so it is cancelled instead.
 export function isEventDeletable(status: EventStatus): boolean {
   return status === "draft";

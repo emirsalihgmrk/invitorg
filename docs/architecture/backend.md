@@ -264,6 +264,10 @@ export const getEventService = cache(async (slug: string): Promise<EventDetail |
 - Guests get `null` / `[]`, never an error.
 - Host- or staff-only data is scoped in the service: someone who is not the event's host (or, for
   check-in, an assigned staff member) gets `null`, exactly like a missing row.
+- A read service that runs its DAL query in parallel with `getCurrentUserService()`
+  (`Promise.all`) first calls `await connection()` from `next/server`. While prerendering,
+  `headers()` never resolves but the parallel query would still open a database connection, which
+  Next rejects (`blocking-prerender-random`). A service that awaits the user first needs no call.
 - A read service that looks a row up by a uuid id (`getEventService(eventId)`) first checks it with
   `isUuid()` from `@/lib/ids` and returns `null` when it fails, so a malformed id from the URL is a
   plain "not found" rather than a uuid cast error in Postgres. Mutation services read through these
