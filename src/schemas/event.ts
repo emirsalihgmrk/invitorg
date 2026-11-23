@@ -10,6 +10,21 @@ export type EventListItem = Pick<
   "id" | "title" | "venue" | "startsAt" | "capacity" | "isPrivate" | "status"
 >;
 
+export type EventDetail = Pick<
+  EventRow,
+  | "id"
+  | "hostId"
+  | "slug"
+  | "title"
+  | "description"
+  | "venue"
+  | "startsAt"
+  | "capacity"
+  | "isPrivate"
+  | "status"
+  | "refundPolicy"
+>;
+
 // ── DAL input schemas ──
 
 // Blank optional text is stored as NULL rather than an empty string.
@@ -53,3 +68,7 @@ export const createEventSchema = createEventRowSchema
     refundPolicy: optionalText(2000, "İade politikası en fazla 2000 karakter olabilir"),
   });
 export type CreateEventInput = z.infer<typeof createEventSchema>;
+
+// Also the input of updateEventService.
+export const updateEventSchema = createEventSchema.partial();
+export type UpdateEventInput = z.infer<typeof updateEventSchema>;

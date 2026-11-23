@@ -261,6 +261,10 @@ export const getEventService = cache(async (slug: string): Promise<EventDetail |
 - Guests get `null` / `[]`, never an error.
 - Host- or staff-only data is scoped in the service: someone who is not the event's host (or, for
   check-in, an assigned staff member) gets `null`, exactly like a missing row.
+- A read service that looks a row up by a uuid id (`getEventService(eventId)`) first checks it with
+  `isUuid()` from `@/lib/ids` and returns `null` when it fails, so a malformed id from the URL is a
+  plain "not found" rather than a uuid cast error in Postgres. Mutation services read through these
+  services and so inherit the check. User ids are better-auth text ids and are not checked.
 
 ### Mutation services
 
@@ -350,6 +354,8 @@ map the result to a response. No logic of their own.
   bodies) is written in the service or next to the wrapper, in Turkish.
 - Secrets and tokens (`qrToken`, invitation codes, slugs) come from `randomToken()` in
   `lib/tokens.ts`, never `Math.random()`.
+- Generic id checks live in `lib/ids.ts` (`isUuid`), not in a module's schema file: they carry no
+  domain meaning, so `eventIdSchema`, `orderIdSchema`, … would only repeat `z.uuid()`.
 
 ---
 

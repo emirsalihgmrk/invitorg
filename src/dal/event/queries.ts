@@ -2,7 +2,7 @@ import { desc, eq } from "drizzle-orm";
 
 import { db } from "@/db";
 import { eventsTable } from "@/db/schema";
-import type { EventListItem } from "@/schemas/event";
+import type { EventDetail, EventListItem } from "@/schemas/event";
 
 export async function getEvents(hostId: string): Promise<EventListItem[]> {
   return db.query.eventsTable.findMany({
@@ -17,5 +17,24 @@ export async function getEvents(hostId: string): Promise<EventListItem[]> {
     },
     where: eq(eventsTable.hostId, hostId),
     orderBy: desc(eventsTable.startsAt),
+  });
+}
+
+export async function getEvent(eventId: string): Promise<EventDetail | undefined> {
+  return db.query.eventsTable.findFirst({
+    columns: {
+      id: true,
+      hostId: true,
+      slug: true,
+      title: true,
+      description: true,
+      venue: true,
+      startsAt: true,
+      capacity: true,
+      isPrivate: true,
+      status: true,
+      refundPolicy: true,
+    },
+    where: eq(eventsTable.id, eventId),
   });
 }

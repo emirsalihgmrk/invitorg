@@ -53,7 +53,7 @@ src/
   dal/          # raw Drizzle, per module: {queries,mutations}.ts
   schemas/      # Zod DTOs per module; column-types.ts = JSONB shapes (below db/)
   constants/    # value arrays + literal types; source of the DB enums
-  lib/          # auth.ts, auth-client.ts, action.ts (ActionResult), errors.ts (AppError), email.ts, tokens.ts, utils.ts
+  lib/          # auth.ts, auth-client.ts, action.ts (ActionResult), errors.ts (AppError), email.ts, ids.ts, tokens.ts, utils.ts
   db/           # schema/ (tables per area), rows.ts (generated row schemas), index.ts (db)
   components/   # shared/ (app-wide) and ui/ (shadcn)
   env.ts        # validated environment (server-only)

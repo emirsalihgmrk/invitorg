@@ -3,30 +3,11 @@ import Link from "next/link";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import type { EventStatus } from "@/constants/event";
+import { formatEventDateTime } from "@/lib/utils";
 import type { EventListItem } from "@/schemas/event";
 import { getEventsService } from "@/services/event";
 
-const STATUS_LABELS: Record<EventStatus, string> = {
-  draft: "Taslak",
-  published: "Yayında",
-  cancelled: "İptal edildi",
-  completed: "Tamamlandı",
-};
-
-const STATUS_VARIANTS = {
-  draft: "outline",
-  published: "default",
-  cancelled: "destructive",
-  completed: "secondary",
-} as const satisfies Record<EventStatus, string>;
-
-// Events take place in Turkey; without a fixed zone the server's (UTC) would be used.
-const DATE_FORMAT = new Intl.DateTimeFormat("tr-TR", {
-  dateStyle: "medium",
-  timeStyle: "short",
-  timeZone: "Europe/Istanbul",
-});
+import EventStatusBadge from "./event-status-badge";
 
 export default async function EventList() {
   const events = await getEventsService();
@@ -70,11 +51,17 @@ interface EventRowProps {
 
 function EventRow({ event }: EventRowProps) {
   return (
-    <li className="flex flex-col gap-2 p-4 sm:flex-row sm:items-center sm:justify-between">
+    // The link's ::after covers the row, so the whole row is clickable.
+    <li className="relative flex flex-col gap-2 p-4 transition-colors first:rounded-t-xl last:rounded-b-xl hover:bg-muted/50 has-focus-visible:ring-3 has-focus-visible:ring-ring/50 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-col gap-1">
-        <p className="truncate font-medium">{event.title}</p>
+        <Link
+          href={`/dashboard/events/${event.id}`}
+          className="truncate font-medium outline-none after:absolute after:inset-0"
+        >
+          {event.title}
+        </Link>
         <p className="text-sm text-muted-foreground">
-          {DATE_FORMAT.format(event.startsAt)}
+          {formatEventDateTime(event.startsAt)}
           {event.venue && ` · ${event.venue}`}
         </p>
       </div>
@@ -85,7 +72,7 @@ function EventRow({ event }: EventRowProps) {
             Özel
           </Badge>
         )}
-        <Badge variant={STATUS_VARIANTS[event.status]}>{STATUS_LABELS[event.status]}</Badge>
+        <EventStatusBadge status={event.status} />
         <span className="text-sm text-muted-foreground">{event.capacity} kişi</span>
       </div>
     </li>

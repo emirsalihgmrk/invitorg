@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { createEventAction } from "@/actions/event";
+import { createEventAction, updateEventAction } from "@/actions/event";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -20,10 +20,16 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { fromDateTimeLocalValue, toDateTimeLocalValue } from "@/lib/utils";
 import { createEventSchema } from "@/schemas/event";
-import type { CreateEventInput } from "@/schemas/event";
+import type { CreateEventInput, EventDetail } from "@/schemas/event";
 
-export default function EventForm() {
+interface EventFormProps {
+  // Edits this event when given, otherwise creates a new draft.
+  event?: EventDetail;
+}
+
+export default function EventForm({ event }: EventFormProps) {
   const router = useRouter();
   const {
     control,
@@ -33,20 +39,40 @@ export default function EventForm() {
     setError,
   } = useForm({
     resolver: zodResolver(createEventSchema),
-    defaultValues: { title: "", description: "", venue: "", isPrivate: false, refundPolicy: "" },
+    defaultValues: {
+      title: event?.title ?? "",
+      description: event?.description ?? "",
+      venue: event?.venue ?? "",
+      startsAt: event?.startsAt,
+      capacity: event?.capacity,
+      isPrivate: event?.isPrivate ?? false,
+      refundPolicy: event?.refundPolicy ?? "",
+    },
   });
   // Stays disabled after success too, so the form can't be resent while navigating.
   const isDisabled = isSubmitting || isSubmitSuccessful;
+  const cancelHref = event ? `/dashboard/events/${event.id}` : "/dashboard";
 
   async function handleValidSubmit(data: CreateEventInput) {
+    if (event) {
+      const result = await updateEventAction(event.id, data);
+      if (!result.ok) {
+        // A root error also marks the submit as unsuccessful, re-enabling the form.
+        setError("root", { message: result.error });
+        return;
+      }
+      toast.success("Değişiklikler kaydedildi.");
+      router.push(`/dashboard/events/${event.id}`);
+      return;
+    }
+
     const result = await createEventAction(data);
     if (!result.ok) {
-      // A root error also marks the submit as unsuccessful, re-enabling the form.
       setError("root", { message: result.error });
       return;
     }
     toast.success("Etkinlik taslak olarak oluşturuldu.");
-    router.push("/dashboard");
+    router.push(`/dashboard/events/${result.data}`);
   }
 
   return (
@@ -76,12 +102,30 @@ export default function EventForm() {
         <div className="grid gap-5 sm:grid-cols-2">
           <Field data-invalid={!!errors.startsAt}>
             <FieldLabel htmlFor="startsAt">Tarih ve saat</FieldLabel>
-            {/* datetime-local has no zone, so the value is read in the host's browser zone. */}
-            <Input
-              id="startsAt"
-              type="datetime-local"
-              aria-invalid={!!errors.startsAt}
-              {...register("startsAt", { valueAsDate: true })}
+            {/* The input holds a zone-less string, the form a Date in Turkish time. It
+                stays uncontrolled: clearing one segment reports "", and writing that back
+                would wipe the whole input. */}
+            <Controller
+              control={control}
+              name="startsAt"
+              render={({ field }) => (
+                <Input
+                  id="startsAt"
+                  type="datetime-local"
+                  aria-invalid={!!errors.startsAt}
+                  name={field.name}
+                  ref={field.ref}
+                  defaultValue={field.value ? toDateTimeLocalValue(field.value) : ""}
+                  onChange={(changeEvent) =>
+                    field.onChange(
+                      changeEvent.target.value
+                        ? fromDateTimeLocalValue(changeEvent.target.value)
+                        : undefined,
+                    )
+                  }
+                  onBlur={field.onBlur}
+                />
+              )}
             />
             <FieldError errors={[errors.startsAt]} />
           </Field>
@@ -146,13 +190,13 @@ export default function EventForm() {
           <Button
             variant="outline"
             nativeButton={false}
-            render={<Link href="/dashboard" />}
+            render={<Link href={cancelHref} />}
             disabled={isDisabled}
           >
             Vazgeç
           </Button>
           <Button type="submit" disabled={isDisabled}>
-            Taslak olarak kaydet
+            {event ? "Değişiklikleri kaydet" : "Taslak olarak kaydet"}
           </Button>
         </div>
       </FieldGroup>

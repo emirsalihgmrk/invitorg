@@ -1,4 +1,4 @@
-import EventForm from "./_components/event-form";
+import EventForm from "../_components/event-form";
 
 export const metadata = { title: "Yeni etkinlik · Invitorg" };
 
