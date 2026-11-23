@@ -1,7 +1,7 @@
-import { desc, eq } from "drizzle-orm";
+import { asc, desc, eq } from "drizzle-orm";
 
 import { db } from "@/db";
-import { eventsTable } from "@/db/schema";
+import { eventsTable, ticketTypesTable } from "@/db/schema";
 import type { EventDetail, EventListItem } from "@/schemas/event";
 
 export async function getEvents(hostId: string): Promise<EventListItem[]> {
@@ -34,6 +34,12 @@ export async function getEvent(eventId: string): Promise<EventDetail | undefined
       isPrivate: true,
       status: true,
       refundPolicy: true,
+    },
+    with: {
+      ticketTypes: {
+        columns: { id: true, name: true, price: true, quota: true },
+        orderBy: asc(ticketTypesTable.createdAt),
+      },
     },
     where: eq(eventsTable.id, eventId),
   });

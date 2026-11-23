@@ -1,26 +1,21 @@
 import { LockIcon, PencilIcon } from "lucide-react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { isEventDeletable, isEventEditable } from "@/constants/event";
 import { cn, formatEventDateTime } from "@/lib/utils";
-import { getEventService } from "@/services/event";
+import type { EventDetail } from "@/schemas/event";
 
 import DeleteEventButton from "./delete-event-button";
 import EventStatusBadge from "../../../../_components/event-status-badge";
 
 interface EventDetailsProps {
-  params: PageProps<"/dashboard/events/[eventId]">["params"];
+  event: EventDetail;
 }
 
-export default async function EventDetails({ params }: EventDetailsProps) {
-  const { eventId } = await params;
-  const event = await getEventService(eventId);
-  if (!event) notFound();
-
+export default function EventDetails({ event }: EventDetailsProps) {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -66,18 +61,6 @@ export default async function EventDetails({ params }: EventDetailsProps) {
           {event.refundPolicy}
         </Detail>
       </dl>
-    </div>
-  );
-}
-
-export function EventDetailsFallback() {
-  return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-2">
-        <div className="h-8 w-64 animate-pulse rounded-md bg-muted" />
-        <div className="h-5 w-20 animate-pulse rounded-md bg-muted" />
-      </div>
-      <div className="h-48 animate-pulse rounded-xl bg-muted" />
     </div>
   );
 }

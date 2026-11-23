@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-import { createEventRowSchema } from "@/db/rows";
-import type { EventRow } from "@/db/rows";
+import { createEventRowSchema, createTicketTypeRowSchema } from "@/db/rows";
+import type { EventRow, TicketTypeRow } from "@/db/rows";
 
 // ── Query types ──
 
@@ -23,7 +23,9 @@ export type EventDetail = Pick<
   | "isPrivate"
   | "status"
   | "refundPolicy"
->;
+> & { ticketTypes: TicketType[] };
+
+export type TicketType = Pick<TicketTypeRow, "id" | "name" | "price" | "quota">;
 
 // ── DAL input schemas ──
 
@@ -72,3 +74,29 @@ export type CreateEventInput = z.infer<typeof createEventSchema>;
 // Also the input of updateEventService.
 export const updateEventSchema = createEventSchema.partial();
 export type UpdateEventInput = z.infer<typeof updateEventSchema>;
+
+// Also the input of createTicketTypeService.
+export const createTicketTypeSchema = createTicketTypeRowSchema
+  .pick({ name: true, price: true, quota: true })
+  .extend({
+    name: z
+      .string()
+      .trim()
+      .min(1, "Bilet türüne bir ad verin")
+      .max(60, "Ad en fazla 60 karakter olabilir"),
+    // In kuruş; 0 is a free ticket.
+    price: z
+      .number({ error: "Fiyatı girin" })
+      .int("Geçerli bir fiyat girin")
+      .min(0, "Fiyat negatif olamaz")
+      .max(10_000_000, "Fiyat en fazla 100.000 TL olabilir"),
+    quota: z
+      .number({ error: "Kontenjanı girin" })
+      .int("Kontenjan tam sayı olmalı")
+      .min(1, "Kontenjan en az 1 olmalı"),
+  });
+export type CreateTicketTypeInput = z.infer<typeof createTicketTypeSchema>;
+
+// Also the input of updateTicketTypeService.
+export const updateTicketTypeSchema = createTicketTypeSchema.partial();
+export type UpdateTicketTypeInput = z.infer<typeof updateTicketTypeSchema>;

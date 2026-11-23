@@ -4,7 +4,7 @@ import { Suspense } from "react";
 
 import { Button } from "@/components/ui/button";
 
-import EventDetails, { EventDetailsFallback } from "./_components/event-details";
+import Content, { ContentFallback } from "./content";
 
 export const metadata = { title: "Etkinlik · Invitorg" };
 
@@ -21,8 +21,8 @@ export default function Page({ params }: PageProps<"/dashboard/events/[eventId]"
         <ArrowLeftIcon aria-hidden />
         Etkinliklerim
       </Button>
-      <Suspense fallback={<EventDetailsFallback />}>
-        <EventDetails params={params} />
+      <Suspense fallback={<ContentFallback />}>
+        <Content params={params} />
       </Suspense>
     </main>
   );

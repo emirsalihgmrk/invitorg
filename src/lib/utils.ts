@@ -25,3 +25,10 @@ export function toDateTimeLocalValue(date: Date): string {
 export function fromDateTimeLocalValue(value: string): Date {
   return new Date(`${value}:00${EVENT_UTC_OFFSET}`);
 }
+
+const PRICE_FORMAT = new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY" });
+
+// Prices are stored in kuruş.
+export function formatPrice(kurus: number): string {
+  return PRICE_FORMAT.format(kurus / 100);
+}

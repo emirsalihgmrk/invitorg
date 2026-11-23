@@ -1,3 +1,4 @@
+import { relations } from "drizzle-orm";
 import {
   boolean,
   index,
@@ -116,3 +117,13 @@ export const waitlistEntriesTable = pgTable(
   },
   (t) => [index().on(t.eventId, t.position)],
 );
+
+// ── Relations ──
+
+export const eventsRelations = relations(eventsTable, ({ many }) => ({
+  ticketTypes: many(ticketTypesTable),
+}));
+
+export const ticketTypesRelations = relations(ticketTypesTable, ({ one }) => ({
+  event: one(eventsTable, { fields: [ticketTypesTable.eventId], references: [eventsTable.id] }),
+}));

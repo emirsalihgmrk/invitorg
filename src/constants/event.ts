@@ -10,3 +10,9 @@ export function isEventEditable(status: EventStatus): boolean {
 export function isEventDeletable(status: EventStatus): boolean {
   return status === "draft";
 }
+
+// Once published, guests may already hold or own seats of a ticket type, so
+// its price and quota must not change underneath them.
+export function areTicketTypesEditable(status: EventStatus): boolean {
+  return status === "draft";
+}
