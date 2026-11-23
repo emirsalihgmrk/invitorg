@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
 import { Toaster } from "@/components/ui/sonner";
+import { cn } from "@/lib/utils";
+
 import "./globals.css";
 
 const geistSans = Geist({
@@ -19,9 +21,9 @@ export const metadata: Metadata = {
   description: "Küçük etkinlikler için davet, ödeme ve girişi tek yerde çöz.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function Layout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="tr" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
+    <html lang="tr" className={cn(geistSans.variable, geistMono.variable, "h-full antialiased")}>
       <body className="flex min-h-full flex-col">
         {children}
         <Toaster />

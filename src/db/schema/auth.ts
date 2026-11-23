@@ -1,16 +1,16 @@
-// Better Auth tabloları. Alan adları Better Auth'un beklediği şemaya uyar.
 import { boolean, index, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
-export const user = pgTable("user", {
+import { USER_ROLES } from "@/constants/user";
+
+// better-auth tables: column names follow the schema better-auth expects.
+
+export const userTable = pgTable("user", {
   id: text().primaryKey(),
   name: text().notNull(),
   email: text().notNull().unique(),
   emailVerified: boolean().notNull().default(false),
   image: text(),
-  // Global rol yalnızca user | admin. Host ve görevli etkinlik bazlıdır.
-  role: text({ enum: ["user", "admin"] })
-    .notNull()
-    .default("user"),
+  role: text({ enum: USER_ROLES }).notNull().default("user"),
   createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp({ withTimezone: true })
     .notNull()
@@ -18,7 +18,7 @@ export const user = pgTable("user", {
     .$onUpdate(() => new Date()),
 });
 
-export const session = pgTable(
+export const sessionTable = pgTable(
   "session",
   {
     id: text().primaryKey(),
@@ -28,7 +28,7 @@ export const session = pgTable(
     userAgent: text(),
     userId: text()
       .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
+      .references(() => userTable.id, { onDelete: "cascade" }),
     createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp({ withTimezone: true })
       .notNull()
@@ -38,7 +38,7 @@ export const session = pgTable(
   (t) => [index().on(t.userId)],
 );
 
-export const account = pgTable(
+export const accountTable = pgTable(
   "account",
   {
     id: text().primaryKey(),
@@ -46,7 +46,7 @@ export const account = pgTable(
     providerId: text().notNull(),
     userId: text()
       .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
+      .references(() => userTable.id, { onDelete: "cascade" }),
     accessToken: text(),
     refreshToken: text(),
     idToken: text(),
@@ -63,7 +63,7 @@ export const account = pgTable(
   (t) => [index().on(t.userId)],
 );
 
-export const verification = pgTable(
+export const verificationTable = pgTable(
   "verification",
   {
     id: text().primaryKey(),

@@ -13,7 +13,17 @@ import { sendEmail } from "@/lib/email";
 export const auth = betterAuth({
   secret: env.BETTER_AUTH_SECRET,
   baseURL: env.BETTER_AUTH_URL,
-  database: drizzleAdapter(db, { provider: "pg", schema }),
+  database: drizzleAdapter(db, {
+    provider: "pg",
+    schema: {
+      user: schema.userTable,
+      session: schema.sessionTable,
+      account: schema.accountTable,
+      verification: schema.verificationTable,
+    },
+  }),
+  // `role` is never client-writable (`input: false`), otherwise
+  // authClient.updateUser() could make anyone an admin.
   user: {
     additionalFields: {
       role: { type: "string", defaultValue: "user", input: false },
@@ -40,9 +50,7 @@ export const auth = betterAuth({
         });
       },
     }),
-    // Server action'larda set edilen çerezler için; listede son sırada olmalı.
+    // Must be the last plugin so it can set cookies from server actions.
     nextCookies(),
   ],
 });
-
-export type Session = typeof auth.$Infer.Session;

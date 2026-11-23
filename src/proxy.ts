@@ -1,7 +1,9 @@
 import { getSessionCookie } from "better-auth/cookies";
-import { NextResponse, type NextRequest } from "next/server";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-// Yalnızca hızlı yönlendirme için çerez kontrolü; asıl doğrulama sunucuda requireUser() ile yapılır.
+// An optimistic cookie check for a fast redirect only; the real check is
+// getCurrentUserService() on the server.
 export function proxy(request: NextRequest) {
   if (!getSessionCookie(request)) {
     const url = new URL("/login", request.url);

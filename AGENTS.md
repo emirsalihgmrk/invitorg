@@ -7,3 +7,11 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+# Agent Instructions
+
+Read and follow [CLAUDE.md](./CLAUDE.md) for the project overview, architecture, commands,
+conventions, and validation requirements. It is the canonical contributor guide for this repository.
+
+When its guidance conflicts with a direct user request, follow the direct request and keep the change
+narrowly scoped.

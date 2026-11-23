@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
   partialPrefetching: true,
   reactCompiler: true,
   experimental: {
-    // authz.ts içindeki forbidden() için.
+    // Enables forbidden() for the per-event host and staff checks.
     authInterrupts: true,
   },
   turbopack: {

@@ -2,9 +2,9 @@ import "dotenv/config";
 
 import { defineConfig } from "drizzle-kit";
 
-// Migration'lar pooler'sız (doğrudan) bağlantıyla çalıştırılır.
+// Migrations run over the direct (unpooled) connection.
 const url = process.env.DATABASE_URL_UNPOOLED ?? process.env.DATABASE_URL;
-if (!url) throw new Error("DATABASE_URL_UNPOOLED veya DATABASE_URL tanımlı değil.");
+if (!url) throw new Error("Neither DATABASE_URL_UNPOOLED nor DATABASE_URL is set.");
 
 export default defineConfig({
   dialect: "postgresql",

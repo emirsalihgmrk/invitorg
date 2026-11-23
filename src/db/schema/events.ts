@@ -10,26 +10,27 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 
-import { user } from "./auth";
+import { EVENT_STATUSES } from "@/constants/event";
+import { userTable } from "@/db/schema/auth";
 
-export const eventStatus = pgEnum("event_status", ["draft", "published", "cancelled", "completed"]);
+export const eventStatusEnum = pgEnum("event_status", EVENT_STATUSES);
 
-export const events = pgTable(
+export const eventsTable = pgTable(
   "events",
   {
     id: uuid().primaryKey().defaultRandom(),
-    // Tahmin edilemez olmalı (bkz. roadmap §6.5).
+    // Must be unguessable: private events are reachable only by their link.
     slug: text().notNull().unique(),
     hostId: text()
       .notNull()
-      .references(() => user.id, { onDelete: "restrict" }),
+      .references(() => userTable.id, { onDelete: "restrict" }),
     title: text().notNull(),
     description: text(),
     venue: text(),
     startsAt: timestamp({ withTimezone: true }).notNull(),
     capacity: integer().notNull(),
     isPrivate: boolean().notNull().default(false),
-    status: eventStatus().notNull().default("draft"),
+    status: eventStatusEnum().notNull().default("draft"),
     refundPolicy: text(),
     createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp({ withTimezone: true })
@@ -40,30 +41,30 @@ export const events = pgTable(
   (t) => [index().on(t.hostId)],
 );
 
-// Görevli (staff) ataması etkinlik bazlıdır.
-export const eventStaff = pgTable(
+// Staff are assigned per event, so check-in rights never leak to other events.
+export const eventStaffTable = pgTable(
   "event_staff",
   {
     eventId: uuid()
       .notNull()
-      .references(() => events.id, { onDelete: "cascade" }),
+      .references(() => eventsTable.id, { onDelete: "cascade" }),
     userId: text()
       .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
+      .references(() => userTable.id, { onDelete: "cascade" }),
     createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [primaryKey({ columns: [t.eventId, t.userId] })],
 );
 
-export const ticketTypes = pgTable(
+export const ticketTypesTable = pgTable(
   "ticket_types",
   {
     id: uuid().primaryKey().defaultRandom(),
     eventId: uuid()
       .notNull()
-      .references(() => events.id, { onDelete: "cascade" }),
+      .references(() => eventsTable.id, { onDelete: "cascade" }),
     name: text().notNull(),
-    // Kuruş cinsinden.
+    // In kuruş, so prices stay integers.
     price: integer().notNull().default(0),
     quota: integer().notNull(),
     createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
@@ -71,26 +72,26 @@ export const ticketTypes = pgTable(
   (t) => [index().on(t.eventId)],
 );
 
-export const menuOptions = pgTable(
+export const menuOptionsTable = pgTable(
   "menu_options",
   {
     id: uuid().primaryKey().defaultRandom(),
     eventId: uuid()
       .notNull()
-      .references(() => events.id, { onDelete: "cascade" }),
+      .references(() => eventsTable.id, { onDelete: "cascade" }),
     name: text().notNull(),
     dietaryTags: text().array().notNull().default([]),
   },
   (t) => [index().on(t.eventId)],
 );
 
-export const invitations = pgTable(
+export const invitationsTable = pgTable(
   "invitations",
   {
     id: uuid().primaryKey().defaultRandom(),
     eventId: uuid()
       .notNull()
-      .references(() => events.id, { onDelete: "cascade" }),
+      .references(() => eventsTable.id, { onDelete: "cascade" }),
     email: text(),
     code: text().notNull().unique(),
     plusOnes: integer().notNull().default(0),
@@ -100,16 +101,16 @@ export const invitations = pgTable(
   (t) => [index().on(t.eventId)],
 );
 
-export const waitlistEntries = pgTable(
+export const waitlistEntriesTable = pgTable(
   "waitlist_entries",
   {
     id: uuid().primaryKey().defaultRandom(),
     eventId: uuid()
       .notNull()
-      .references(() => events.id, { onDelete: "cascade" }),
+      .references(() => eventsTable.id, { onDelete: "cascade" }),
     userId: text()
       .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
+      .references(() => userTable.id, { onDelete: "cascade" }),
     position: integer().notNull(),
     createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
   },

@@ -1,3 +1,3 @@
-export * from "./auth";
-export * from "./events";
-export * from "./orders";
+export * from "@/db/schema/auth";
+export * from "@/db/schema/events";
+export * from "@/db/schema/orders";

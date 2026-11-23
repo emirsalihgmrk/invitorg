@@ -1,11 +1,11 @@
-// Tahmin edilemez slug, davet kodu ve QR token'ları üretir (bkz. roadmap §6.1, §6.5).
-// Karıştırılabilen karakterler (0/O, 1/l/I) alfabeden çıkarılmıştır.
+// Unguessable slugs, invitation codes and QR tokens. Easily confused
+// characters (0/O, 1/l/I) are left out of the alphabet.
 const ALPHABET = "23456789abcdefghijkmnpqrstuvwxyz";
 
 export function randomToken(length = 16): string {
-  // 256, alfabe uzunluğunun (32) katı olduğu için modulo yanlılığı oluşmaz.
+  // 256 is a multiple of the alphabet length (32), so the modulo is unbiased.
   const bytes = crypto.getRandomValues(new Uint8Array(length));
-  let out = "";
-  for (const b of bytes) out += ALPHABET[b % ALPHABET.length];
-  return out;
+  let token = "";
+  for (const byte of bytes) token += ALPHABET[byte % ALPHABET.length];
+  return token;
 }
