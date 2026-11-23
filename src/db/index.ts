@@ -14,3 +14,5 @@ neonConfig.webSocketConstructor = ws;
 const pool = new Pool({ connectionString: env.DATABASE_URL });
 
 export const db = drizzle({ client: pool, schema, casing: "snake_case" });
+
+export type Transaction = Parameters<Parameters<typeof db.transaction>[0]>[0];
