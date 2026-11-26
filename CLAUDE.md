@@ -100,4 +100,5 @@ Payment runs in the provider's sandbox mode only.
 `DATABASE_URL` (Neon pooled), `DATABASE_URL_UNPOOLED` (direct, for migrations),
 `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`,
 `RESEND_API_KEY` (optional: without it, emails and sign-in codes are printed to the server console),
-`EMAIL_FROM`. All are validated in `src/env.ts`; see `.env.example`.
+`EMAIL_FROM`, `IYZICO_API_KEY`, `IYZICO_SECRET_KEY`, `IYZICO_BASE_URL` (must be the sandbox URL).
+All are validated in `src/env.ts`; see `.env.example`.

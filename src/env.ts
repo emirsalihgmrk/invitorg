@@ -10,6 +10,10 @@ const envSchema = z.object({
   // Optional in development: emails are printed to the console instead.
   RESEND_API_KEY: z.string().optional(),
   EMAIL_FROM: z.string().min(1),
+  IYZICO_API_KEY: z.string().min(1),
+  IYZICO_SECRET_KEY: z.string().min(1),
+  // Payment runs in the sandbox only, so the live API cannot be reached by mistake.
+  IYZICO_BASE_URL: z.literal("https://sandbox-api.iyzipay.com"),
 });
 
 const parsed = envSchema.safeParse(process.env);
