@@ -16,6 +16,9 @@ jobs:
       GOOGLE_CLIENT_ID: ci
       GOOGLE_CLIENT_SECRET: ci
       EMAIL_FROM: Invitorg <ci@example.com>
+      IYZICO_API_KEY: ci
+      IYZICO_SECRET_KEY: ci
+      IYZICO_BASE_URL: https://sandbox-api.iyzipay.com
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
