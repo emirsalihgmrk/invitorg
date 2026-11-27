@@ -1,3 +1,4 @@
+import { relations } from "drizzle-orm";
 import {
   index,
   integer,
@@ -41,6 +42,24 @@ export const ordersTable = pgTable(
       .$onUpdate(() => new Date()),
   },
   (t) => [index().on(t.eventId, t.status), index().on(t.userId)],
+);
+
+// The seats an order holds (while pending) or owns (once paid), per ticket type.
+export const orderItemsTable = pgTable(
+  "order_items",
+  {
+    id: uuid().primaryKey().defaultRandom(),
+    orderId: uuid()
+      .notNull()
+      .references(() => ordersTable.id, { onDelete: "cascade" }),
+    ticketTypeId: uuid()
+      .notNull()
+      .references(() => ticketTypesTable.id, { onDelete: "restrict" }),
+    quantity: integer().notNull(),
+    // In kuruş; the price at the time of the order, so the total stays explainable.
+    unitPrice: integer().notNull(),
+  },
+  (t) => [unique().on(t.orderId, t.ticketTypeId), index().on(t.ticketTypeId)],
 );
 
 export const paymentsTable = pgTable(
@@ -106,3 +125,18 @@ export const checkInLogsTable = pgTable(
   },
   (t) => [index().on(t.eventId, t.scannedAt)],
 );
+
+// ── Relations ──
+
+export const ordersRelations = relations(ordersTable, ({ one, many }) => ({
+  event: one(eventsTable, { fields: [ordersTable.eventId], references: [eventsTable.id] }),
+  items: many(orderItemsTable),
+}));
+
+export const orderItemsRelations = relations(orderItemsTable, ({ one }) => ({
+  order: one(ordersTable, { fields: [orderItemsTable.orderId], references: [ordersTable.id] }),
+  ticketType: one(ticketTypesTable, {
+    fields: [orderItemsTable.ticketTypeId],
+    references: [ticketTypesTable.id],
+  }),
+}));

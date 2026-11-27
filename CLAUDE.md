@@ -25,6 +25,10 @@ A change is done when `lint`, `format:check`, `typecheck` and `build` all pass.
 **Do not write test files (`*.test.ts`).** Verify changes with the commands above and by running the
 app.
 
+## Workflow
+
+Start every new piece of work on its own branch off `main`; never commit to `main` directly.
+
 ## Stack
 
 Next.js 16 (App Router, React 19, React Compiler, `cacheComponents`) · Drizzle ORM (+ drizzle-zod) ·

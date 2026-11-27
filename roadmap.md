@@ -155,7 +155,7 @@ WaitlistEntry(id, eventId, userId, position)
 
 **Hafta 5-6: Sipariş ve ödeme**
 
-- [ ] Sepet/sipariş akışı, geçici rezervasyon (hold)
+- [x] Sepet/sipariş akışı, geçici rezervasyon (hold)
 - [ ] Ödeme sağlayıcı entegrasyonu (sandbox), webhook
 - [ ] Süresi dolan rezervasyon temizliği (cron)
 - [ ] **Çıktı:** Misafir sandbox ödemesiyle bilet alabiliyor

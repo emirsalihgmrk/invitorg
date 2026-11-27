@@ -196,7 +196,9 @@ Raw Drizzle, one statement per function, no business logic, no auth.
     computed in the service from projected rows.
   - **Row locks:** a read that must hold `SELECT … FOR UPDATE` inside a service's transaction (the
     last seat of a ticket type) is named `lock<Entity>`, takes a **required** `tx` and is called
-    only from mutation services. It is the one read that skips its `get…Service`.
+    only from mutation services. It is the one read that skips its `get…Service`. A read that
+    must see the locked state in the same transaction (`getOrderItems` after `lockTicketTypes`)
+    takes an optional `tx` and is called directly there; its read service calls it without one.
 - **Mutations**
   - Signature is `(relationIds…, input, tx?)` and **every mutation accepts `tx?: Transaction`** as
     its last parameter:

@@ -25,6 +25,11 @@ export function isEventVisible(status: EventStatus): boolean {
   return status !== "draft";
 }
 
+// Only a published event sells tickets; the host's draft preview does not.
+export function isEventOnSale(status: EventStatus): boolean {
+  return status === "published";
+}
+
 // A published event may already have orders, so it is cancelled instead.
 export function isEventDeletable(status: EventStatus): boolean {
   return status === "draft";
