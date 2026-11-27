@@ -3,7 +3,7 @@ import "server-only";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
-import { emailOTP } from "better-auth/plugins";
+import { emailOTP, oAuthProxy } from "better-auth/plugins";
 
 import { db } from "@/db";
 import * as schema from "@/db/schema";
@@ -12,7 +12,16 @@ import { sendEmail } from "@/lib/email";
 
 export const auth = betterAuth({
   secret: env.BETTER_AUTH_SECRET,
-  baseURL: env.BETTER_AUTH_URL,
+  // Every Vercel preview has its own URL, so the base URL follows the request host. The pattern
+  // covers only this project's previews; `*.vercel.app` would trust any Vercel site.
+  baseURL: {
+    allowedHosts: [
+      new URL(env.BETTER_AUTH_URL).host,
+      "invitorg-*-emirsalihgmrks-projects.vercel.app",
+      "localhost:3000",
+    ],
+    fallback: env.BETTER_AUTH_URL,
+  },
   database: drizzleAdapter(db, {
     provider: "pg",
     schema: {
@@ -50,6 +59,9 @@ export const auth = betterAuth({
         });
       },
     }),
+    // Google accepts only fixed redirect URIs, so preview sign-ins go through production
+    // (BETTER_AUTH_URL) and come back. Needs the same BETTER_AUTH_SECRET in both environments.
+    oAuthProxy({ productionURL: env.BETTER_AUTH_URL }),
     // Must be the last plugin so it can set cookies from server actions.
     nextCookies(),
   ],
