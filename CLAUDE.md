@@ -16,6 +16,7 @@ pnpm typecheck      # next typegen + tsc --noEmit
 
 pnpm db:generate    # generate a migration from src/db/schema/ into drizzle/
 pnpm db:migrate     # apply migrations (uses DATABASE_URL_UNPOOLED)
+pnpm vercel-build   # Vercel build command: migrate, then build (preview runs on its own Neon branch)
 pnpm db:studio      # Drizzle Studio
 ```
 
